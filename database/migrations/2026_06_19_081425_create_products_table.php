@@ -10,10 +10,11 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_barang', 50)->unique();
-            $table->string('nama_barang', 150);
-            $table->string('satuan', 30);
-            $table->decimal('harga', 15, 2);
+            $table->string('kode_barang')->unique();
+            $table->string('nama_barang');
+            $table->string('satuan');
+            $table->decimal('harga', 12, 2);
+            $table->foreignId('category_id')->constrained('categories');
             $table->timestamps();
         });
     }

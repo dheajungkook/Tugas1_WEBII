@@ -1,53 +1,54 @@
 <x-appadmin-layout>
     <div class="container mt-4">
 
-        {{-- Flash message --}}
         @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        {{-- Header --}}
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1>Manajemen Produk</h1>
+            <h4>List Customer</h4>
             <button onclick="showModal('modalTambah')" class="btn btn-primary">
-                + Tambah Produk
+                + Tambah Customer
             </button>
         </div>
 
-        {{-- Tabel --}}
         <div class="card">
             <div class="card-body">
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th>Satuan</th>
-                            <th>Harga</th>
+                            <th>Kode Customer</th>
+                            <th>Nama Customer</th>
+                            <th>Alamat</th>
+                            <th>Email</th>
+                            <th>No. Telp</th>
                             <th>Aksi</th>
-                            <th>Kategori</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($products as $i => $product)
+                        @forelse($customers as $i => $customer)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td><code>{{ $product->kode_barang }}</code></td>
-                            <td>{{ $product->nama_barang }}</td>
+                            <td>{{ $customer->kode_customer }}</td>
+                            <td>{{ $customer->nama_customer }}</td>
+                            <td>{{ $customer->alamat }}</td>
+                            <td>{{ $customer->email }}</td>
+                            <td>{{ $customer->no_telp }}</td>
                             <td>
-                                <span class="badge bg-info text-dark">{{ $product->satuan }}</span>
-                            </td>
-                            <td>Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
-                            <td>
-                                <button onclick="openEdit({{ $product->id }}, '{{ $product->kode_barang }}', '{{ addslashes($product->nama_barang) }}', '{{ $product->satuan }}', '{{ $product->harga }}', '{{ $product->category_id }}')"
+                                <button onclick="openEdit(
+                                    {{ $customer->id }},
+                                    '{{ $customer->kode_customer }}',
+                                    '{{ addslashes($customer->nama_customer) }}',
+                                    '{{ addslashes($customer->alamat) }}',
+                                    '{{ $customer->email }}',
+                                    '{{ $customer->no_telp }}')"
                                     class="btn btn-sm btn-warning">
                                     ✏️ Edit
                                 </button>
-                                <form method="POST" action="{{ route('admin.products.destroy', $product) }}" style="display:inline;"
-                                      onsubmit="return confirm('Yakin hapus produk ini?')">
+                                <form method="POST" action="{{ route('admin.customers.destroy', $customer) }}"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('Yakin hapus customer ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger">
@@ -55,18 +56,11 @@
                                     </button>
                                 </form>
                             </td>
-                            <td>
-                                @if($product->category)
-                                    <span class="badge bg-secondary">{{ $product->category->nama_kategori }}</span>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </td>
                         </tr>
                         @empty
                         <tr>
                             <td colspan="7" class="text-center text-muted py-4">
-                                Belum ada data produk. Klik "Tambah Produk" untuk memulai.
+                                Belum ada data customer.
                             </td>
                         </tr>
                         @endforelse
@@ -78,11 +72,11 @@
 
     {{-- Modal Tambah --}}
     <div id="modalTambah" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:12px;padding:24px;width:420px;max-width:90vw;">
-            <h5 class="mb-3">📦 Tambah Produk Baru</h5>
-            <form method="POST" action="{{ route('admin.products.store') }}">
+        <div style="background:white;border-radius:12px;padding:24px;width:480px;max-width:90vw;">
+            <h5 class="mb-3">👤 Tambah Customer Baru</h5>
+            <form method="POST" action="{{ route('admin.customers.store') }}">
                 @csrf
-                @include('admin.products._form')
+                @include('admin.customers._form')
                 <div class="d-flex justify-content-end gap-2 mt-3">
                     <button type="button" onclick="hideModal('modalTambah')" class="btn btn-secondary">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -93,12 +87,12 @@
 
     {{-- Modal Edit --}}
     <div id="modalEdit" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:12px;padding:24px;width:420px;max-width:90vw;">
-            <h5 class="mb-3">✏️ Edit Produk</h5>
+        <div style="background:white;border-radius:12px;padding:24px;width:480px;max-width:90vw;">
+            <h5 class="mb-3">✏️ Edit Customer</h5>
             <form id="formEdit" method="POST">
                 @csrf
                 @method('PUT')
-                @include('admin.products._form')
+                @include('admin.customers._form')
                 <div class="d-flex justify-content-end gap-2 mt-3">
                     <button type="button" onclick="hideModal('modalEdit')" class="btn btn-secondary">Batal</button>
                     <button type="submit" class="btn btn-primary">Perbarui</button>
@@ -114,17 +108,14 @@
     function hideModal(id) {
         document.getElementById(id).style.display = 'none';
     }
-    function openEdit(id, kode, nama, satuan, harga, categoryId) {
+    function openEdit(id, kode, nama, alamat, email, no_telp) {
         const form = document.getElementById('formEdit');
-        form.action = '/admin/products/' + id;
-        form.querySelector('[name=kode_barang]').value = kode;
-        form.querySelector('[name=nama_barang]').value = nama;
-        form.querySelector('[name=satuan]').value = satuan;
-        form.querySelector('[name=harga]').value = harga;
-        const categorySelect = form.querySelector('[name=category_id]');
-        if (categorySelect) {
-            categorySelect.value = categoryId;
-        }
+        form.action = '/admin/customers/' + id;
+        form.querySelector('[name=kode_customer]').value = kode;
+        form.querySelector('[name=nama_customer]').value = nama;
+        form.querySelector('[name=alamat]').value = alamat;
+        form.querySelector('[name=email]').value = email;
+        form.querySelector('[name=no_telp]').value = no_telp;
         showModal('modalEdit');
     }
     ['modalTambah', 'modalEdit'].forEach(id => {

@@ -46,3 +46,19 @@
         @enderror
     </div>
 </div>
+
+<div class="mb-3 mt-3">
+    <label class="form-label">Kategori</label>
+    <select name="category_id" class="form-select">
+        <option value="">-- Pilih Kategori --</option>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}"
+                {{ old('category_id', $product->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                {{ $category->nama_kategori }}
+            </option>
+        @endforeach
+    </select>
+    @error('category_id')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+    @enderror
+</div>

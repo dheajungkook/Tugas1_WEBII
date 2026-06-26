@@ -24,6 +24,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.products.index') }}">Products</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.customers.index') }}">Costomers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.categories.index') }}">Categories</a>
+                    </li>
                 </ul>
             </div>
         </div>

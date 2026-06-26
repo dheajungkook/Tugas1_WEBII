@@ -11,11 +11,11 @@ class Product extends Model
         'nama_barang',
         'satuan',
         'harga',
+        'category_id',
     ];
 
-    // Format harga otomatis
-    public function getHargaFormattedAttribute(): string
+    public function category()
     {
-        return 'Rp ' . number_format($this->harga, 0, ',', '.');
+        return $this->belongsTo(Category::class);
     }
 }
